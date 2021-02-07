@@ -28,7 +28,7 @@ class _CarsOverviewScreenState extends State<CarsOverviewScreen> {
   var _isInit = true;
   var _isLoading = false;
   var _searchController = TextEditingController();
-
+// Car details section 
   @override
   void initState() {
     // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!

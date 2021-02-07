@@ -7,7 +7,7 @@ import '../providers/auth.dart';
 import '../models/http_exception.dart';
 
 enum AuthMode { Signup, Login }
-
+// Authscreen section 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
 
