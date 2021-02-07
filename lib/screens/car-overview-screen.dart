@@ -136,7 +136,7 @@ class _CarsOverviewScreenState extends State<CarsOverviewScreen> {
                                 keyboardType: TextInputType.text,
                                 maxLines: 1,
                                 decoration: InputDecoration(
-                                  hintText: "Search",
+                                  hintText: "Find your car",
                                   hoverColor: Theme.of(context).accentColor,
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(

@@ -34,7 +34,7 @@ class Car with ChangeNotifier {
     isFavorite = !isFavorite;
     notifyListeners();
     final url =
-        'https://stage-1a56d.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+        'https://car-rental-5d8bb-default-rtdb.firebaseio.com/$userId/$id.json?auth=$token';
     try {
       final response = await http.put(
         url,
