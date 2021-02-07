@@ -217,39 +217,40 @@ class Cars with ChangeNotifier {
     existingProduct = null;
   }
 
-  // Future<void> fetchAndSetProductsByCategory(String category) async {
-  //   var url =
-  //       'https://stage-1a56d.firebaseio.com/products.json?auth=$authToken';
-  //   try {
-  //     final response = await http.get(url);
-  //     final extractedData = json.decode(response.body) as Map<String, dynamic>;
-  //     if (extractedData == null) {
-  //       return;
-  //     }
-  //     url =
-  //         'https://stage-1a56d.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
-  //     final favoriteResponse = await http.get(url);
-  //     final favoriteData = json.decode(favoriteResponse.body);
-  //     final List<Product> loadedProducts = [];
-  //     extractedData.forEach((prodId, prodData) {
-  //       String prodCategory = prodData['category'];
-  //       if (prodCategory == category) {
-  //         loadedProducts.add(Product(
-  //           id: prodId,
-  //           title: prodData['title'],
-  //           description: prodData['description'],
-  //           price: prodData['price'],
-  //           isFavorite:
-  //               favoriteData == null ? false : favoriteData[prodId] ?? false,
-  //           imageUrl: prodData['imageUrl'],
-  //           category: prodCategory,
-  //         ));
-  //       }
-  //     });
-  //     _items = loadedProducts;
-  //     notifyListeners();
-  //   } catch (error) {
-  //     throw (error);
-  //   }
-  // }
+  Future<void> fetchAndSetCarsByCategory(String category) async {
+    var url =
+        'https://car-rental-5d8bb-default-rtdb.firebaseio.com/cars.json?auth=$authToken';
+    try {
+      final response = await http.get(url);
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) {
+        return;
+      }
+      url =
+          'https://car-rental-5d8bb-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
+      final List<Car> loadedProducts = [];
+      extractedData.forEach((prodId, prodData) {
+        String prodCategory = prodData['category'];
+        if (prodCategory == category) {
+          loadedProducts.add(Car(
+            id: prodId,
+            title: prodData['title'],
+            description: prodData['description'],
+            price: prodData['price'],
+            consommation: prodData['consommation'],
+            isFavorite:
+                favoriteData == null ? false : favoriteData[prodId] ?? false,
+            imageUrl: prodData['imageUrl'],
+            category: prodCategory,
+          ));
+        }
+      });
+      _items = loadedProducts;
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
 }

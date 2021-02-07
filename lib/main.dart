@@ -1,3 +1,4 @@
+import 'package:car_rental/providers/Rental.dart';
 import 'package:car_rental/screens/admin-cars-screen.dart';
 import 'package:car_rental/screens/edit-car-screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,6 +31,13 @@ class MyApp extends StatelessWidget {
             auth.token,
             auth.userId,
             previousProducts == null ? [] : previousProducts.items,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Rentals>(
+          builder: (ctx, auth, previousRentals) => Rentals(
+            auth.token,
+            auth.userId,
+            previousRentals == null ? [] : previousRentals.rentals,
           ),
         ),
       ],
