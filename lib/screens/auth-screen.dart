@@ -144,7 +144,7 @@ class _AuthCardState extends State<AuthCard>
         print("Logging..........1");
         await Provider.of<Auth>(context, listen: false).login(
           _authData['email'],
-          _authData['email'],
+          _authData['password'],
         );
         print(_authData['email'] + "  " + _authData['email']);
         print("Logging..........2");
@@ -156,6 +156,8 @@ class _AuthCardState extends State<AuthCard>
         );
       }
     } on HttpException catch (error) {
+      // print(error.toString());
+      // print(_authData['password']);
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXISTS')) {
         errorMessage = 'This email address is already in use.';
