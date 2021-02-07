@@ -10,7 +10,7 @@ import 'dart:io';
 // import 'package:image_picker/image_picker.dart';
 
 class EditCarScreen extends StatefulWidget {
-  static const routeName = '/edit-product';
+  static const routeName = '/edit-car';
 
   @override
   _EditCarScreenState createState() => _EditCarScreenState();
@@ -18,6 +18,7 @@ class EditCarScreen extends StatefulWidget {
 
 class _EditCarScreenState extends State<EditCarScreen> {
   final _priceFocusNode = FocusNode();
+  final _consoFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _imageUrlFocusNode = FocusNode();
@@ -26,6 +27,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
     id: null,
     title: '',
     price: 0,
+    consommation: 0,
     description: '',
     imageUrl: '',
   );
@@ -33,13 +35,14 @@ class _EditCarScreenState extends State<EditCarScreen> {
     'title': '',
     'description': '',
     'price': '',
+    'consommation': '',
     'imageUrl': '',
   };
   var _isInit = true;
   var _isLoading = false;
   Map<String, bool> _category = {
-    "Hardware": false,
-    "Electronic": false,
+    "Sport": false,
+    "Family": false,
   };
   @override
   void initState() {
@@ -58,7 +61,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
           'price': _editedProduct.price.toString(),
-          // 'imageUrl': _editedProduct.imageUrl,
+          'consommation': _editedProduct.consommation.toString(),
           'imageUrl': '',
         };
         _imageUrlController.text = _editedProduct.imageUrl;
@@ -72,6 +75,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
   void dispose() {
     _imageUrlFocusNode.removeListener(_updateImageUrl);
     _priceFocusNode.dispose();
+    _consoFocusNode.dispose();
     _descriptionFocusNode.dispose();
     _imageUrlController.dispose();
     _imageUrlFocusNode.dispose();
@@ -106,6 +110,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
     _editedProduct = Car(
         title: _editedProduct.title,
         price: _editedProduct.price,
+        consommation: _editedProduct.consommation,
         description: _editedProduct.description,
         imageUrl: _editedProduct.imageUrl,
         id: _editedProduct.id,
@@ -115,8 +120,8 @@ class _EditCarScreenState extends State<EditCarScreen> {
       _isLoading = true;
     });
     if (_editedProduct.id != null) {
-      // await Provider.of<Cars>(context, listen: false)
-      //     .updateProduct(_editedProduct.id, _editedProduct);
+      await Provider.of<Cars>(context, listen: false)
+          .updateCar(_editedProduct.id, _editedProduct);
     } else {
       try {
         await Provider.of<Cars>(context, listen: false).addCar(_editedProduct);
@@ -151,21 +156,6 @@ class _EditCarScreenState extends State<EditCarScreen> {
     // Navigator.of(context).pop();
   }
 
-  // File _image;
-  // final picker = ImagePicker();
-
-  // Future _imgFromGallery() async {
-  //   final pickedFile = await picker.getImage(source: ImageSource.gallery);
-
-  //   setState(() {
-  //     _image = File(pickedFile.path.toString());
-  //   });
-
-  //   final StorageReference ref =
-  //       FirebaseStorage.instance.ref().child("img.jpeg");
-  //   final StorageUploadTask uploadTask = ref.putFile(_image);
-  // }
-
   void _showPicker(context) {
     showModalBottomSheet(
         backgroundColor: Color.fromRGBO(108, 99, 255, 1),
@@ -181,7 +171,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
                         color: Colors.white,
                       ),
                       title: new Text(
-                        'Galerie',
+                        'Galery',
                         style: TextStyle(color: Colors.white),
                       ),
                       onTap: () {
@@ -200,7 +190,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: Text('Edit Car'),
         shape: ContinuousRectangleBorder(
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(40),
@@ -225,7 +215,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
                   children: <Widget>[
                     TextFormField(
                       initialValue: _initValues['title'],
-                      decoration: InputDecoration(labelText: 'Title'),
+                      decoration: InputDecoration(labelText: 'Name'),
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_priceFocusNode);
@@ -240,6 +230,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
                         _editedProduct = Car(
                             title: value,
                             price: _editedProduct.price,
+                            consommation: _editedProduct.consommation,
                             description: _editedProduct.description,
                             imageUrl: _editedProduct.imageUrl,
                             id: _editedProduct.id,
@@ -253,8 +244,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
                       keyboardType: TextInputType.number,
                       focusNode: _priceFocusNode,
                       onFieldSubmitted: (_) {
-                        FocusScope.of(context)
-                            .requestFocus(_descriptionFocusNode);
+                        FocusScope.of(context).requestFocus(_consoFocusNode);
                       },
                       validator: (value) {
                         if (value.isEmpty) {
@@ -272,6 +262,41 @@ class _EditCarScreenState extends State<EditCarScreen> {
                         _editedProduct = Car(
                             title: _editedProduct.title,
                             price: double.parse(value),
+                            consommation: _editedProduct.consommation,
+                            description: _editedProduct.description,
+                            imageUrl: _editedProduct.imageUrl,
+                            id: _editedProduct.id,
+                            isFavorite: _editedProduct.isFavorite);
+                      },
+                    ),
+                    TextFormField(
+                      initialValue: _initValues['consommation'],
+                      decoration:
+                          InputDecoration(labelText: 'Average consumption'),
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.number,
+                      focusNode: _consoFocusNode,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context)
+                            .requestFocus(_descriptionFocusNode);
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value.';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'Please enter a valid number.';
+                        }
+                        if (double.parse(value) <= 0) {
+                          return 'Please enter a number greater than zero.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _editedProduct = Car(
+                            title: _editedProduct.title,
+                            price: _editedProduct.price,
+                            consommation: double.parse(value),
                             description: _editedProduct.description,
                             imageUrl: _editedProduct.imageUrl,
                             id: _editedProduct.id,
@@ -297,6 +322,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
                         _editedProduct = Car(
                           title: _editedProduct.title,
                           price: _editedProduct.price,
+                          consommation: _editedProduct.consommation,
                           description: value,
                           imageUrl: _editedProduct.imageUrl,
                           id: _editedProduct.id,
@@ -304,70 +330,6 @@ class _EditCarScreenState extends State<EditCarScreen> {
                         );
                       },
                     ),
-                    // Row(
-                    //   crossAxisAlignment: CrossAxisAlignment.end,
-                    //   children: <Widget>[
-                    //     Container(
-                    //       width: 100,
-                    //       height: 100,
-                    //       margin: EdgeInsets.only(
-                    //         top: 8,
-                    //         right: 10,
-                    //       ),
-                    //       decoration: BoxDecoration(
-                    //         border: Border.all(
-                    //           width: 1,
-                    //           color: Colors.grey,
-                    //         ),
-                    //       ),
-                    //       child: _imageUrlController.text.isEmpty
-                    //           ? Text('Enter a URL')
-                    //           : FittedBox(
-                    //               child: Image.network(
-                    //                 _imageUrlController.text,
-                    //                 fit: BoxFit.cover,
-                    //               ),
-                    //             ),
-                    //     ),
-                    //     Expanded(
-                    //       child: TextFormField(
-                    //         decoration: InputDecoration(labelText: 'Image URL'),
-                    //         keyboardType: TextInputType.url,
-                    //         textInputAction: TextInputAction.done,
-                    //         controller: _imageUrlController,
-                    //         focusNode: _imageUrlFocusNode,
-                    //         onFieldSubmitted: (_) {
-                    //           _saveForm();
-                    //         },
-                    //         validator: (value) {
-                    //           if (value.isEmpty) {
-                    //             return 'Please enter an image URL.';
-                    //           }
-                    //           if (!value.startsWith('http') &&
-                    //               !value.startsWith('https')) {
-                    //             return 'Please enter a valid URL.';
-                    //           }
-                    //           if (!value.endsWith('.png') &&
-                    //               !value.endsWith('.jpg') &&
-                    //               !value.endsWith('.jpeg')) {
-                    //             return 'Please enter a valid image URL.';
-                    //           }
-                    //           return null;
-                    //         },
-                    //         onSaved: (value) {
-                    //           _editedProduct = Product(
-                    //             title: _editedProduct.title,
-                    //             price: _editedProduct.price,
-                    //             description: _editedProduct.description,
-                    //             imageUrl: value,
-                    //             id: _editedProduct.id,
-                    //             isFavorite: _editedProduct.isFavorite,
-                    //           );
-                    //         },
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                     SizedBox(
                       height: 15,
                     ),
@@ -384,9 +346,8 @@ class _EditCarScreenState extends State<EditCarScreen> {
                               child: FlatButton(
                                 onPressed: () {
                                   setState(() {
-                                    _category["Electronic"] =
-                                        !_category["Electronic"];
-                                    _category["Hardware"] = false;
+                                    _category["Family"] = !_category["Family"];
+                                    _category["Sport"] = false;
                                   });
                                 },
                                 child: Container(
@@ -396,8 +357,8 @@ class _EditCarScreenState extends State<EditCarScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 20),
-                                    child: Text("Electronic",
-                                        style: (_category["Electronic"] == true)
+                                    child: Text("Family",
+                                        style: (_category["Family"] == true)
                                             ? Theme.of(context)
                                                 .textTheme
                                                 .body1
@@ -412,7 +373,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
                                                         64, 61, 57, 1),
                                                     fontSize: 18)),
                                   ),
-                                  decoration: (_category["Electronic"] == true)
+                                  decoration: (_category["Family"] == true)
                                       ? BoxDecoration(
                                           color: Color.fromRGBO(64, 61, 57, 1),
                                           borderRadius: BorderRadius.all(
@@ -432,9 +393,8 @@ class _EditCarScreenState extends State<EditCarScreen> {
                             child: FlatButton(
                               onPressed: () {
                                 setState(() {
-                                  _category["Hardware"] =
-                                      !_category["Hardware"];
-                                  _category["Electronic"] = false;
+                                  _category["Sport"] = !_category["Sport"];
+                                  _category["Family"] = false;
                                 });
                               },
                               child: Container(
@@ -444,8 +404,8 @@ class _EditCarScreenState extends State<EditCarScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
-                                  child: Text('Hardware',
-                                      style: (_category["Hardware"] == true)
+                                  child: Text('Sport',
+                                      style: (_category["Sport"] == true)
                                           ? Theme.of(context)
                                               .textTheme
                                               .body1
@@ -460,7 +420,7 @@ class _EditCarScreenState extends State<EditCarScreen> {
                                                       64, 61, 57, 1),
                                                   fontSize: 18)),
                                 ),
-                                decoration: (_category["Hardware"] == true)
+                                decoration: (_category["Sport"] == true)
                                     ? BoxDecoration(
                                         color: Color.fromRGBO(64, 61, 57, 1),
                                         borderRadius: BorderRadius.all(

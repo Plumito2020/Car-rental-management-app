@@ -43,20 +43,19 @@ class AdminCarItem extends StatelessWidget {
                 Icons.delete,
                 color: Color.fromRGBO(254, 95, 85, 1),
               ),
-              onPressed: () {
-                // try {
-                //   await Provider.of<Cars>(context, listen: false)
-                //       .deleteProduct(id);
-                // } catch (error) {
-                //   scaffold.showSnackBar(
-                //     SnackBar(
-                //       content: Text(
-                //         'Deleting failed!',
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //   );
-                // }
+              onPressed: () async {
+                try {
+                  await Provider.of<Cars>(context, listen: false).deleteCar(id);
+                } catch (error) {
+                  scaffold.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Deleting failed!',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
               },
               color: Theme.of(context).errorColor,
             ),
