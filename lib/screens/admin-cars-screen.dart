@@ -8,7 +8,7 @@ import '../widgets/app-drawer.dart';
 import './edit-car-screen.dart';
 
 class AdminCarsScreen extends StatelessWidget {
-  static const routeName = '/user-products';
+  static const routeName = '/admin-cars';
 
   Future<void> _refreshProducts(BuildContext context) async {
     await Provider.of<Cars>(context, listen: false).fetchAndSetCars(true);
@@ -26,7 +26,7 @@ class AdminCarsScreen extends StatelessWidget {
         child: Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: const Text('Your Products'),
+        title: const Text('Your cars'),
         shape: ContinuousRectangleBorder(
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(40),

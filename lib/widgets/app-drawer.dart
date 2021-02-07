@@ -1,3 +1,4 @@
+import 'package:car_rental/screens/admin-cars-screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,10 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.shop),
-            title: Text('Shop'),
+            title: Text(
+              'Catalogue',
+              style: Theme.of(context).textTheme.body1.copyWith(fontSize: 17),
+            ),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
             },
@@ -29,7 +33,10 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.payment),
-            title: Text('Orders'),
+            title: Text(
+              'Rentals',
+              style: Theme.of(context).textTheme.body1.copyWith(fontSize: 17),
+            ),
             onTap: () {
               // Navigator.of(context)
               //     .pushReplacementNamed(OrdersScreen.routeName);
@@ -44,16 +51,22 @@ class AppDrawer extends StatelessWidget {
           if (isAdmin)
             ListTile(
               leading: Icon(Icons.edit),
-              title: Text('Manage Products'),
+              title: Text(
+                'Manage my Cars',
+                style: Theme.of(context).textTheme.body1.copyWith(fontSize: 17),
+              ),
               onTap: () {
-                // Navigator.of(context)
-                //     .pushReplacementNamed(UserProductsScreen.routeName);
+                Navigator.of(context)
+                    .pushReplacementNamed(AdminCarsScreen.routeName);
               },
             ),
           Divider(),
           ListTile(
             leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
+            title: Text(
+              'Logout',
+              style: Theme.of(context).textTheme.body1.copyWith(fontSize: 17),
+            ),
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');

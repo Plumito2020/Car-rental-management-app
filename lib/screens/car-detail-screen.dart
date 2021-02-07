@@ -1,11 +1,10 @@
+import 'package:car_rental/widgets/rent-car-card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 import '../providers/Cars.dart';
 
 class CarDetailScreen extends StatelessWidget {
-  
   static const routeName = '/car-detail';
 
   @override
@@ -16,10 +15,9 @@ class CarDetailScreen extends StatelessWidget {
       context,
       listen: false,
     ).findById(productId);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
-     
       body: Builder(
         builder: (context) => CustomScrollView(
           slivers: <Widget>[
@@ -32,7 +30,6 @@ class CarDetailScreen extends StatelessWidget {
               expandedHeight: 400,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
-             
                 background: Hero(
                   tag: loadedProduct.id,
                   child: Image.network(
@@ -75,8 +72,10 @@ class CarDetailScreen extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                        
-
+                          return showDialog(
+                              context: context,
+                              builder: (ctx) =>
+                                  RentCarCard(price: loadedProduct.price));
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(right: 15),
@@ -91,7 +90,7 @@ class CarDetailScreen extends StatelessWidget {
                                 child: Text(
                                   "RENT IT !!",
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 15),
+                                      color: Colors.white, fontSize: 20),
                                 ),
                               )),
                         ),
@@ -106,13 +105,57 @@ class CarDetailScreen extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       width: double.infinity,
-                      child:
-                      
-                       Text(
-                        loadedProduct.description,
-                        textAlign: TextAlign.justify,
-                        softWrap: true,
-                        style: TextStyle(fontSize: 17),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              loadedProduct.description,
+                              softWrap: true,
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Category ",
+                            textAlign: TextAlign.justify,
+                            softWrap: true,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromRGBO(235, 94, 40, 1),
+                            ),
+                          ),
+                          Text(
+                            loadedProduct.category,
+                            textAlign: TextAlign.justify,
+                            softWrap: true,
+                            style: TextStyle(fontSize: 17),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Consommation Moyenne  ",
+                            textAlign: TextAlign.justify,
+                            softWrap: true,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromRGBO(235, 94, 40, 1),
+                            ),
+                          ),
+                          Text(
+                            loadedProduct.consommation.toString() +
+                                " Litre/Jour",
+                            textAlign: TextAlign.justify,
+                            softWrap: true,
+                            style: TextStyle(fontSize: 17),
+                          ),
+                        ],
                       ),
                     ),
                   ),

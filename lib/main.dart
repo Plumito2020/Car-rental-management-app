@@ -1,5 +1,6 @@
 import 'package:car_rental/screens/admin-cars-screen.dart';
 import 'package:car_rental/screens/edit-car-screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import './providers/Cars.dart';
 import 'package:car_rental/providers/auth.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
@@ -37,7 +39,19 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primaryColor: Color.fromRGBO(64, 61, 57, 1),
             accentColor: Colors.deepOrange,
-            fontFamily: 'Lato',
+            textTheme: GoogleFonts.openSansTextTheme(textTheme).copyWith(
+              body1: GoogleFonts.quicksand(
+                fontSize: 25,
+              ),
+              body2: GoogleFonts.roboto(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              title: GoogleFonts.openSans(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           home:
               //  AdminCarsScreen(),
@@ -54,7 +68,7 @@ class MyApp extends StatelessWidget {
           routes: {
             CarDetailScreen.routeName: (ctx) => CarDetailScreen(),
             // OrdersScreen.routeName: (ctx) => OrdersScreen(),
-            // UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+            AdminCarsScreen.routeName: (ctx) => AdminCarsScreen(),
             EditCarScreen.routeName: (ctx) => EditCarScreen(),
           },
         ),
