@@ -57,84 +57,63 @@ class Rentals with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> fetchAndSetRentals() async {
-  //   final url =
-  //       'https://car-rental-5d8bb-default-rtdb.firebaseio.com/rentals.json?auth=$authToken';
-  //   final response = await http.get(url);
-  //   final List<RentalItem> loadedOrders = [];
-  //   final extractedData = json.decode(response.body) as Map<String, dynamic>;
-  //   if (extractedData == null) {
-  //     return;
-  //   }
-  //   extractedData.forEach((orderId, orderData) {
-  //     if (orderData["userId"] == userId) {
-  //       loadedOrders.add(
-  //         RentalItem(
-  //           id: orderId,
-  //           amount: orderData['amount'],
-  //           dateTime: DateTime.parse(orderData['dateTime']),
-  //           products: (orderData['products'] as List<dynamic>)
-  //               .map(
-  //                 (item) => CartItem(
-  //                   id: item['id'],
-  //                   price: item['price'],
-  //                   quantity: item['quantity'],
-  //                   title: item['title'],
-  //                 ),
-  //               )
-  //               .toList(),
-  //           orderState: orderData['state'],
-  //           deliveryAddress: orderData['deliveryAddress'],
-  //           deliveryOption: orderData['deliveryOption'],
-  //           orderMakerId: orderData['userId'],
-  //           deliveryDate: DateTime.parse(orderData['deliveryDate']),
-  //         ),
-  //       );
-  //     }
-  //   });
-  //   _rentals = loadedOrders.reversed.toList();
-  //   notifyListeners();
-  // }
+  Future<void> fetchAndSetRentals() async {
+    final url =
+        'https://car-rental-5d8bb-default-rtdb.firebaseio.com/rentals.json?auth=$authToken';
+    final response = await http.get(url);
+    final List<RentalItem> loadedOrders = [];
+    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    if (extractedData == null) {
+      return;
+    }
+    extractedData.forEach((orderId, orderData) {
+      if (orderData["rentalMakerId"] == userId) {
+        loadedOrders.add(
+          RentalItem(
+              id: orderId,
+              total: orderData['total'],
+              startDate: DateTime.parse(orderData['startDate']),
+              endDate: DateTime.parse(orderData['endDate']),
+              carName: orderData['carName'],
+              rentalMakerId: orderData["rentalMakerId"]),
+        );
+      }
+    });
+    _rentals = loadedOrders.reversed.toList();
+    notifyListeners();
+  }
 
-  // Future<void> archiveOrder(OrderItem order) async {
-  //   final orderId = order.id;
-  //   final archiveUrl =
-  //       'https://stage-1a56d.firebaseio.com/archive.json?auth=$authToken';
-  //   final timestamp = DateTime.now();
-  //   final response = await http.post(
-  //     archiveUrl,
-  //     body: json.encode({
-  //       'amount': order.amount,
-  //       'archiveDateTime': timestamp.toIso8601String(),
-  //       'orderDateTime': order.dateTime.toIso8601String(),
-  //       'products': order.products
-  //           .map((cp) => {
-  //                 'id': cp.id,
-  //                 'title': cp.title,
-  //                 'quantity': cp.quantity,
-  //                 'price': cp.price,
-  //               })
-  //           .toList(),
-  //       'state': order.orderState,
-  //     }),
-  //   );
+  Future<void> archiveRental(RentalItem order) async {
+    final rentalId = order.id;
+    final archiveUrl =
+        'https://car-rental-5d8bb-default-rtdb.firebaseio.com/archive.json?auth=$authToken';
+    final timestamp = DateTime.now();
+    final response = await http.post(
+      archiveUrl,
+      body: json.encode({
+        'carName': order.carName,
+        'total': order.total,
+        'startDate': order.startDate.toIso8601String(),
+        'endDate': order.endDate.toIso8601String(),
+      }),
+    );
 
-  //   final orderUrl =
-  //       'https://stage-1a56d.firebaseio.com/orders/$orderId.json?auth=$authToken';
-  //   final existingOrderIndex = _orders.indexWhere((o) => o.id == orderId);
-  //   var existingOrder = _orders[existingOrderIndex];
-  //   _orders.removeAt(existingOrderIndex);
-  //   notifyListeners();
-  //   final responseOrder = await http.delete(orderUrl);
-  //   if (responseOrder.statusCode >= 400) {
-  //     _orders.insert(existingOrderIndex, existingOrder);
-  //     notifyListeners();
-  //     throw HttpException('Could not archive the order.');
-  //   }
-  //   existingOrder = null;
+    final rentalUrl =
+        'https://car-rental-5d8bb-default-rtdb.firebaseio.com/rentals/$rentalId.json?auth=$authToken';
+    final existingOrderIndex = _rentals.indexWhere((o) => o.id == rentalId);
+    var existingOrder = _rentals[existingOrderIndex];
+    _rentals.removeAt(existingOrderIndex);
+    notifyListeners();
+    final responseOrder = await http.delete(rentalUrl);
+    if (responseOrder.statusCode >= 400) {
+      _rentals.insert(existingOrderIndex, existingOrder);
+      notifyListeners();
+      throw HttpException('Could not archive the rental.');
+    }
+    existingOrder = null;
 
-  //   notifyListeners();
-  // }
+    notifyListeners();
+  }
 
   // Future<void> deleteOrderFromUser(OrderItem order) async {
   //   final orderId = order.id;

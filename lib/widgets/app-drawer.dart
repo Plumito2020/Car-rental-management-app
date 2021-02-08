@@ -1,4 +1,5 @@
 import 'package:car_rental/screens/admin-cars-screen.dart';
+import 'package:car_rental/screens/admin-rentals-screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,13 +39,8 @@ class AppDrawer extends StatelessWidget {
               style: Theme.of(context).textTheme.body1.copyWith(fontSize: 17),
             ),
             onTap: () {
-              // Navigator.of(context)
-              //     .pushReplacementNamed(OrdersScreen.routeName);
-              // Navigator.of(context).pushReplacement(
-              //   CustomRoute(
-              //     builder: (ctx) => OrdersScreen(),
-              //   ),
-              // );
+              Navigator.of(context)
+                  .pushReplacementNamed(AdminRentalsScreen.routeName);
             },
           ),
           if (isAdmin) Divider(),

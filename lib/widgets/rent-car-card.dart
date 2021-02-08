@@ -201,26 +201,29 @@ class _RentCarCardState extends State<RentCarCard> {
                 SizedBox(
                   height: 25,
                 ),
-                FlatButton(
-                  onPressed: () {
-                    _save();
-                  },
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: Text(
-                        'Confirm',
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                              color: Colors.white,
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : FlatButton(
+                        onPressed: () {
+                          _save();
+                        },
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Text(
+                              'Confirm',
+                              style: Theme.of(context).textTheme.body1.copyWith(
+                                    color: Colors.white,
+                                  ),
                             ),
+                          ),
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(235, 94, 40, 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                        ),
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(235, 94, 40, 1),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                  ),
-                ),
               ],
             ),
           ),
