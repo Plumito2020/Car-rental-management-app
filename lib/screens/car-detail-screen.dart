@@ -61,7 +61,7 @@ class CarDetailScreen extends StatelessWidget {
                               height: 5,
                             ),
                             Text(
-                              loadedProduct.price.toString() + " Dhs/Jour",
+                              loadedProduct.price.toString() + " Dhs/Day",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 17,
@@ -74,8 +74,10 @@ class CarDetailScreen extends StatelessWidget {
                         onTap: () {
                           return showDialog(
                               context: context,
-                              builder: (ctx) =>
-                                  RentCarCard(price: loadedProduct.price));
+                              builder: (ctx) => RentCarCard(
+                                    price: loadedProduct.price,
+                                    carName: loadedProduct.title,
+                                  ));
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(right: 15),
@@ -139,7 +141,7 @@ class CarDetailScreen extends StatelessWidget {
                             height: 10,
                           ),
                           Text(
-                            "Consommation Moyenne  ",
+                            "Consommation Moyenne",
                             textAlign: TextAlign.justify,
                             softWrap: true,
                             style: TextStyle(
@@ -149,8 +151,7 @@ class CarDetailScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            loadedProduct.consommation.toString() +
-                                " Litre/Jour",
+                            loadedProduct.consommation.toString() + " Litre/Km",
                             textAlign: TextAlign.justify,
                             softWrap: true,
                             style: TextStyle(fontSize: 17),

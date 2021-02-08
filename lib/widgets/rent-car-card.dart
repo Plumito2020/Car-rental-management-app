@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../providers/Rental.dart';
 
 class RentCarCard extends StatefulWidget {
   final double price;
-  RentCarCard({this.price});
+  final String carName;
+
+  RentCarCard({this.price, this.carName});
   @override
   _RentCarCardState createState() => _RentCarCardState();
 }
@@ -12,6 +16,8 @@ class _RentCarCardState extends State<RentCarCard> {
   DateTime _dateDeb, _dateFin;
   String _dateDebTxt, _dateFinTxt;
   bool _invalidDates = false;
+  var _isLoading = false;
+  double amount = 0;
 
   @override
   void initState() {
@@ -26,10 +32,13 @@ class _RentCarCardState extends State<RentCarCard> {
       final difference = _dateFin.difference(_dateDeb).inDays;
       total = (difference * widget.price);
     }
+    setState(() {
+      amount = total;
+    });
     return total;
   }
 
-  void _save() {
+  void _save() async {
     //Validates dates
     if (_dateDeb == null || _dateFin == null) {
       setState(() {
@@ -51,7 +60,15 @@ class _RentCarCardState extends State<RentCarCard> {
         _invalidDates = false;
       });
     }
-
+    setState(() {
+      _isLoading = true;
+    });
+    await Provider.of<Rentals>(context, listen: false)
+        .rentCar(amount, widget.carName, _dateDeb, _dateFin);
+    setState(() {
+      _isLoading = false;
+    });
+    print("Hello");
     Navigator.of(context).pop();
   }
 
@@ -184,24 +201,29 @@ class _RentCarCardState extends State<RentCarCard> {
                 SizedBox(
                   height: 25,
                 ),
-                FlatButton(
-                  onPressed: () {},
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: Text(
-                        'Confirm',
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                              color: Colors.white,
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : FlatButton(
+                        onPressed: () {
+                          _save();
+                        },
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Text(
+                              'Confirm',
+                              style: Theme.of(context).textTheme.body1.copyWith(
+                                    color: Colors.white,
+                                  ),
                             ),
+                          ),
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(235, 94, 40, 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                        ),
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(235, 94, 40, 1),
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                  ),
-                ),
               ],
             ),
           ),
