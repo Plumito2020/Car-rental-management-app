@@ -115,25 +115,30 @@ class Rentals with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> deleteOrderFromUser(OrderItem order) async {
-  //   final orderId = order.id;
+  Future<bool> canIRentIt(DateTime startDate, DateTime endDate) async {
+    final url =
+        'https://car-rental-5d8bb-default-rtdb.firebaseio.com/rentals.json?auth=$authToken';
+    final response = await http.get(url);
+    final List<RentalItem> loadedOrders = [];
+    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    if (extractedData == null) {
+      return false;
+    }
 
-  //   final orderUrl =
-  //       'https://stage-1a56d.firebaseio.com/orders/$orderId.json?auth=$authToken';
-  //   final existingOrderIndex = _orders.indexWhere((o) => o.id == orderId);
-  //   var existingOrder = _orders[existingOrderIndex];
-  //   _orders.removeAt(existingOrderIndex);
-  //   notifyListeners();
-  //   final responseOrder = await http.delete(orderUrl);
-  //   if (responseOrder.statusCode >= 400) {
-  //     _orders.insert(existingOrderIndex, existingOrder);
-  //     notifyListeners();
-  //     throw HttpException('Could not archive the order.');
-  //   }
-  //   existingOrder = null;
+    extractedData.forEach((orderId, orderData) {
+      DateTime start = DateTime.parse(orderData['startDate']);
+      DateTime end = DateTime.parse(orderData['endDate']);
+      if ((startDate.isAfter(start) && endDate.isBefore(end)) ||
+          (startDate.isBefore(start) && endDate.isAfter(end)) ||
+          (startDate.isBefore(start) && endDate.isBefore(end)) ||
+          (startDate.isAfter(start) && endDate.isAfter(end)) &&
+              (startDate == start && endDate == end)) {
+        return true;
+      }
+    });
 
-  //   notifyListeners();
-  // }
+    return false;
+  }
 
   Future<void> rentCar(double total, String carName, DateTime startDate,
       DateTime endDate) async {
@@ -164,35 +169,23 @@ class Rentals with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> confirmOrCancelOrder(String id, OrderItem order) async {
-  //   final orderIndex = _orders.indexWhere((order) => order.id == id);
+  Future<void> cancelRental(RentalItem order) async {
+    final rentalId = order.id;
 
-  //   if (orderIndex >= 0) {
-  //     final url =
-  //         'https://stage-1a56d.firebaseio.com/orders/$id.json?auth=$authToken';
-  //     await http.patch(url,
-  //         body: json.encode({
-  //           'userId': order.orderMakerId,
-  //           'amount': order.amount,
-  //           'dateTime': order.dateTime.toIso8601String(),
-  //           'products': order.products
-  //               .map((cp) => {
-  //                     'id': cp.id,
-  //                     'title': cp.title,
-  //                     'quantity': cp.quantity,
-  //                     'price': cp.price,
-  //                   })
-  //               .toList(),
-  //           'state': order.orderState,
-  //           'deliveryOption': order.deliveryOption,
-  //           'deliveryAddress': order.deliveryAddress,
-  //           'deliveryDate': order.deliveryDate.toIso8601String(),
-  //         }));
-  //     _orders[orderIndex] = order;
-  //     print(order.orderState);
-  //     notifyListeners();
-  //   } else {
-  //     print('...');
-  //   }
-  // }
+    final rentalUrl =
+        'https://car-rental-5d8bb-default-rtdb.firebaseio.com/rentals/$rentalId.json?auth=$authToken';
+    final existingOrderIndex = _rentals.indexWhere((o) => o.id == rentalId);
+    var existingOrder = _rentals[existingOrderIndex];
+    _rentals.removeAt(existingOrderIndex);
+    notifyListeners();
+    final responseOrder = await http.delete(rentalUrl);
+    if (responseOrder.statusCode >= 400) {
+      _rentals.insert(existingOrderIndex, existingOrder);
+      notifyListeners();
+      throw HttpException('Could not delete the rental.');
+    }
+    existingOrder = null;
+
+    notifyListeners();
+  }
 }

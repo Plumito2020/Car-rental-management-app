@@ -1,3 +1,4 @@
+import 'package:car_rental/screens/admin-rentals-screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class _RentCarCardState extends State<RentCarCard> {
   void initState() {
     _dateDebTxt = "Start Date";
     _dateFinTxt = "End Date";
+
     super.initState();
   }
 
@@ -63,13 +65,16 @@ class _RentCarCardState extends State<RentCarCard> {
     setState(() {
       _isLoading = true;
     });
+
     await Provider.of<Rentals>(context, listen: false)
         .rentCar(amount, widget.carName, _dateDeb, _dateFin);
+
     setState(() {
       _isLoading = false;
     });
-    print("Hello");
+
     Navigator.of(context).pop();
+    Navigator.of(context).pushReplacementNamed(AdminRentalsScreen.routeName);
   }
 
   @override
@@ -198,6 +203,20 @@ class _RentCarCardState extends State<RentCarCard> {
                 Text(
                   getMeTheTotal().toString() + " Dhs",
                 ),
+                SizedBox(
+                  height: 15,
+                ),
+                // Row(
+                //   children: [
+                //     Text(
+                //       "This car is unavailable for the specified dates !",
+                //       style: TextStyle(
+                //         fontSize: 15,
+                //         color: Colors.red,
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(
                   height: 25,
                 ),

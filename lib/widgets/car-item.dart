@@ -44,7 +44,7 @@ class CarItem extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ),
-            subtitle: Text(product.price.toString() + " Dhs/Jour"),
+            subtitle: Text(product.price.toString() + " Dhs/Day"),
             trailing: Consumer<Car>(
               builder: (ctx, product, _) => InkWell(
                 child: Icon(
