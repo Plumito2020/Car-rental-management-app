@@ -16,8 +16,6 @@ class UserRentalItem extends StatefulWidget {
 
 class _UserRentalItemState extends State<UserRentalItem> {
   var _expanded = false;
-  var _isLoading = false;
-  var _isLoadingArchive = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +53,7 @@ class _UserRentalItemState extends State<UserRentalItem> {
             AnimatedContainer(
               duration: Duration(milliseconds: 300),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              height: 65,
+              height: 100,
               child: ListView(
                 children: [
                   Row(
@@ -80,7 +78,80 @@ class _UserRentalItemState extends State<UserRentalItem> {
                         ),
                       ),
                     ],
-                  )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: InkWell(
+                      onTap: () {
+                        return showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            title: Text(
+                              'Are you sure?',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Color.fromRGBO(254, 95, 85, 1),
+                              ),
+                            ),
+                            content: Text(
+                              'Do you want to cancel this rental ?',
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text(
+                                  'No',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(ctx).pop(false);
+                                },
+                              ),
+                              FlatButton(
+                                child: Text(
+                                  'Yes',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  Navigator.of(ctx).pop(true);
+
+                                  await Provider.of<Rentals>(context,
+                                          listen: false)
+                                      .cancelRental(widget.order);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Center(
+                            child: Text(
+                              'Cancel',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .body1
+                                  .copyWith(color: Colors.white, fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            color: Color.fromRGBO(254, 95, 85, 1),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             )
