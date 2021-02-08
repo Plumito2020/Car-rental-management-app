@@ -8,6 +8,7 @@ import '../providers/auth.dart';
 
 class CarItem extends StatelessWidget {
   @override
+  // Car item code 
   Widget build(BuildContext context) {
     final product = Provider.of<Car>(context, listen: false);
 
