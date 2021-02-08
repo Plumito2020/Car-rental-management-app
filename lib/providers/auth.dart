@@ -38,7 +38,7 @@ class Auth with ChangeNotifier {
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
     // Verify if its an admin account
-    if (email.contains("zak@gmail.fr")) {
+    if (email.contains("rental-admin@gmail.com")) {
       _isAdmin = true;
     } else {
       _isAdmin = false;
